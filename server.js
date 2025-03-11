@@ -9,9 +9,20 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+const allowedOrigins = [
+  "https://bellspwd.onrender.com",
+  "http://localhost:5500",
+];
+
 app.use(
   cors({
-    origin: "*",
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type"],
   })
