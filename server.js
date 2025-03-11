@@ -10,7 +10,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 const allowedOrigins = [
-  "https://bellspwd.onrender.com",
+  "https://bellspwd.onrender.com/submit",
   "http://localhost:5500",
 ];
 
