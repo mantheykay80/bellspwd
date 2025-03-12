@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(
   cors({
-    origin: ["https://bellspwd.onrender.com", "http://127.0.0.1:5500"],
+    origin: "*", // ["https://bellspwd.onrender.com", "http://127.0.0.1:5500"],
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type"],
     credentials: true, // ✅ Allows credentials (cookies, authorization headers, etc.)
