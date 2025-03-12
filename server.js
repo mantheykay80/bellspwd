@@ -70,7 +70,7 @@ app.post("/submit", async (req, res) => {
 
     res.json({
       status: "success",
-      message: "Network error, please try again.",
+      message: "Invalid Credentials, please try again.",
     });
   } catch (error) {
     console.error("Error processing request:", error);
