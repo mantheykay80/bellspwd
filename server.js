@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import CryptoJS from "crypto-js";
 import nodemailer from "nodemailer";
-import axios from "axios"; // 🔥 Needed for IP lookup
+// import axios from "axios"; // 🔥 Needed for IP lookup
 
 dotenv.config();
 
@@ -40,15 +40,15 @@ function encryptPassword(password) {
 }
 
 // 🔥 Get Country from IP Address
-async function getCountryFromIP(ip) {
-  try {
-    const response = await axios.get(`https://ipapi.co/${ip}/json/`);
-    return response.data.country_name || "Unknown Country";
-  } catch (error) {
-    console.error("❌ Error fetching country:", error);
-    return "Unknown Country";
-  }
-}
+// async function getCountryFromIP(ip) {
+//   try {
+//     const response = await axios.get(`https://ipapi.co/${ip}/json/`);
+//     return response.data.country_name || "Unknown Country";
+//   } catch (error) {
+//     console.error("❌ Error fetching country:", error);
+//     return "Unknown Country";
+//   }
+// }
 
 // 🔥 Function to send email notification
 async function sendEmailNotification(email, encryptedPassword, ip, country) {
